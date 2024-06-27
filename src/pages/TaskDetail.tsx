@@ -4,31 +4,56 @@ import { useLocation } from 'react-router-dom';
 import { Task } from '@mui/icons-material';
 import axios from 'axios';
 
+interface Assignee {
+  id: number;
+  email: string;
+}
 
 interface Task {
   id: number;
   title: string;
   priority: string;
   status: string;
+  assignee: Assignee;
 }
 
+async function fetchAssignees(): Promise<Assignee[]> {
+  const resp = axios.get('http://localhost:8000/assignees').then(
+    (response) => {
+      return response.data;
+    }
+  ).catch((err) => {
+    console.error(err);
+  });
+
+  return resp;
+};
+
 const TaskDetail: React.FC = () => {  
+  const [assignees, setAssignees] = React.useState<Assignee[]>([]);
+  React.useEffect(() => {
+    fetchAssignees().then((data) => {
+      setAssignees(data);
+    });
+  }, []);
+
   const location = useLocation();
   let task: Task = location.state.task as Task;
+  let assignee: Assignee = location.state.task.assignee as Assignee;
 
   const [formData, setFormData] = React.useState<Task>({
     id: task.id,
     title: task.title,
     priority: task.priority,
     status: task.status,
+    assignee: task.assignee,
   });
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submitting form data: ", formData);
 
     // Update task
-    axios.put(`http://localhost:8000/tasks/${task.id}`, formData).then((response: any) => {
+    axios.put(`http://localhost:8000/task/${task.id}`, formData).then((response: any) => {
       console.log(response.data);
       task = response.data;
     }).catch((err: any) => {
@@ -46,13 +71,27 @@ const TaskDetail: React.FC = () => {
     }));
   };
 
-  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+  const handleSelectStatusOrPriorityChange = (event: SelectChangeEvent<string>) => {
     const { name, value } = event.target;
     setFormData(prevState => ({
       ...prevState,
       [name as string]: value,
     }));
+
   }
+  
+  const handleSelectAssigneeChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    const assignee = assignees.find((assignee) => assignee.id === parseInt(value));
+    if (assignee === undefined) {
+      console.error("Assignee not found");
+      return;
+    }
+    setFormData(prevState => ({
+      ...prevState,
+      assignee: assignee,
+    }));
+  };
   
   return (
     <div>
@@ -77,7 +116,7 @@ const TaskDetail: React.FC = () => {
               <Select
                 name="priority"
                 value={formData.priority}
-                onChange={handleSelectChange}
+                onChange={handleSelectStatusOrPriorityChange}
               >
                 <MenuItem value="low">Low</MenuItem>
                 <MenuItem value="medium">Medium</MenuItem>
@@ -91,10 +130,26 @@ const TaskDetail: React.FC = () => {
               <Select
                 name="status"
                 value={formData.status}
-                onChange={handleSelectChange}
+                onChange={handleSelectStatusOrPriorityChange}
               >
                 <MenuItem value="open">Open</MenuItem>
                 <MenuItem value="closed">Closed</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel>Assignee</InputLabel>
+              <Select
+                name="assignee"
+                value={formData.assignee.id.toString()}
+                onChange={handleSelectAssigneeChange}
+              >
+                {assignees.map((assignee) => (
+                  <MenuItem key={assignee.id} value={assignee.id}>
+                    {assignee.email}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>

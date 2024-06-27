@@ -2,6 +2,7 @@
 import React from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AppBar } from '@mui/material';
 import Home from './pages/Home';
 import TaskDetail from './pages/TaskDetail';
 
@@ -27,13 +28,14 @@ const App: React.FC = () => {
     });
   }, []);
 
-  const handleViewTicket = (key: string) => {
-    // Navigate to /task/:key
-    window.location.href = `/task/${key}`;
-  };
-
   return (
     <div>
+      <AppBar position="static">
+        <a href="/" style={{ color: 'white', textDecoration: 'none' }}>
+          <h1>Deskly</h1>
+
+        </a>
+      </AppBar>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
