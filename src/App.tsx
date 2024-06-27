@@ -2,9 +2,13 @@
 import React from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AppBar } from '@mui/material';
+import { AppBar, Container, CssBaseline, Link, ThemeProvider, Toolbar, Typography} from '@mui/material';
 import Home from './pages/Home';
 import TaskDetail from './pages/TaskDetail';
+import Box from '@mui/material/Box';
+
+import theme from './theme';
+
 
 async function fetchTasks(): Promise<[any]> {
   const resp = axios.get('http://localhost:8000/tasks').then(
@@ -30,11 +34,17 @@ const App: React.FC = () => {
 
   return (
     <div>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Deskly
+              <Link href="/" color="inherit" sx={{paddingLeft: "2rem"}}>Home</Link>
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </Box>
       <AppBar position="static">
-        <a href="/" style={{ color: 'white', textDecoration: 'none' }}>
-          <h1>Deskly</h1>
-
-        </a>
       </AppBar>
       <Router>
         <Routes>
