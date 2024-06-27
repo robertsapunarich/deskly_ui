@@ -1,6 +1,6 @@
 import React from 'react';
-import { Typography, TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { Typography, TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, FormLabel} from '@mui/material';
+import { Form, useLocation } from 'react-router-dom';
 import { Task } from '@mui/icons-material';
 import axios from 'axios';
 
@@ -102,9 +102,9 @@ const TaskDetail: React.FC = () => {
       <form onSubmit={handleFormSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
+            <FormLabel>Title</FormLabel>
             <TextField
               fullWidth
-              label="Title"
               name="title"
               value={formData.title}
               onChange={handleInputChange}
@@ -112,7 +112,7 @@ const TaskDetail: React.FC = () => {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel>Priority</InputLabel>
+              <FormLabel>Priority</FormLabel>
               <Select
                 name="priority"
                 value={formData.priority}
@@ -126,7 +126,7 @@ const TaskDetail: React.FC = () => {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
+              <FormLabel>Status</FormLabel>
               <Select
                 name="status"
                 value={formData.status}
@@ -139,7 +139,7 @@ const TaskDetail: React.FC = () => {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel>Assignee</InputLabel>
+              <FormLabel>Assignee</FormLabel>
               <Select
                 name="assignee"
                 value={formData.assignee.id.toString()}

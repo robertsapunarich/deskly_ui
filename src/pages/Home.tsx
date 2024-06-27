@@ -1,6 +1,6 @@
 // src/App.tsx
 import React from 'react';
-import { Button, Typography, Card, Grid } from '@mui/material';
+import { Button, Typography, Card, CardContent, Container, Grid } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,30 +27,33 @@ const Home: React.FC = () => {
   }, []);
 
   const HandleViewTask = (task: any) => {
-    // Navigate to /task/:id
     const id = task.id;
     navigate(`/task/${id}`, { state: { task } });
   };
 
   return (
     <div>
-      <Typography variant="h1" gutterBottom>
-        Welcome to Deskly
-      </Typography>
-      <Grid container spacing={4}>
-        {taskData.map((task: any) => (
-          <Grid item key={task.id}>
-            <Card>
-              <Typography variant="h5">{task.title}</Typography>
-              <Typography>{task.priority}</Typography>
-              <Typography>{task.status}</Typography>
-              <Button variant="contained" color="primary" onClick={() => HandleViewTask(task)}>
-                View and edit task
-              </Button>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      <Container maxWidth="lg">
+        <Typography variant="h1" gutterBottom>
+          Welcome to Deskly
+        </Typography>
+        <Grid container spacing={4}>
+          {taskData.map((task: any) => (
+            <Grid item key={task.id}>
+              <Card variant='outlined'>
+                <CardContent>
+                  <Typography variant="h5">{task.title}</Typography>
+                  <Typography>{task.priority}</Typography>
+                  <Typography>{task.status}</Typography>
+                  <Button variant="contained" color="primary" onClick={() => HandleViewTask(task)}>
+                    View and edit task
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </div>
   );
 };
