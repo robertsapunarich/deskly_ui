@@ -2,8 +2,6 @@
 import React from 'react';
 import { Button, Typography, Card, Grid } from '@mui/material';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
 
 async function fetchTasks(): Promise<[any]> {
   const resp = axios.get('http://localhost:8000/tasks').then(
@@ -18,7 +16,7 @@ async function fetchTasks(): Promise<[any]> {
   return await resp;
 }
 
-const App: React.FC = () => {
+const Home: React.FC = () => {
   const [cardData, setCardData] = React.useState<any[]>([]);
 
   React.useEffect(() => {
@@ -55,4 +53,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Home;
