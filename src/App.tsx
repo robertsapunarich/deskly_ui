@@ -1,9 +1,9 @@
 // src/App.tsx
 import React from 'react';
-import { Button, Typography, Card, Grid } from '@mui/material';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
+import TaskDetail from './pages/TaskDetail';
 
 async function fetchTasks(): Promise<[any]> {
   const resp = axios.get('http://localhost:8000/tasks').then(
@@ -34,23 +34,12 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <Typography variant="h1" gutterBottom>
-        Welcome to Deskly
-      </Typography>
-      <Grid container spacing={4}>
-        {cardData.map((card: any) => (
-          <Grid item key={card.id}>
-            <Card>
-              <Typography variant="h5">{card.title}</Typography>
-              <Typography>{card.priority}</Typography>
-              <Typography>{card.status}</Typography>
-              <Button variant="contained" color="primary" onClick={() => handleViewTicket(card.id)}>
-                View and edit ticket
-              </Button>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/task/:task_id" element={<TaskDetail />} />
+        </Routes>
+      </Router>
     </div>
   );
 };

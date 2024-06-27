@@ -2,11 +2,11 @@
 import React from 'react';
 import { Button, Typography, Card, Grid } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 async function fetchTasks(): Promise<[any]> {
   const resp = axios.get('http://localhost:8000/tasks').then(
     (response) => {
-      console.log(response.data);
       return response.data;
     }
   ).catch((err) => {
@@ -17,17 +17,19 @@ async function fetchTasks(): Promise<[any]> {
 }
 
 const Home: React.FC = () => {
-  const [cardData, setCardData] = React.useState<any[]>([]);
+  const [taskData, setTaskData] = React.useState<any[]>([]);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchTasks().then((data) => {
-      setCardData(data);
+      setTaskData(data);
     });
   }, []);
 
-  const handleViewTicket = (key: string) => {
-    // Navigate to /task/:key
-    window.location.href = `/task/${key}`;
+  const HandleViewTask = (task: any) => {
+    // Navigate to /task/:id
+    const id = task.id;
+    navigate(`/task/${id}`, { state: { task } });
   };
 
   return (
@@ -36,14 +38,14 @@ const Home: React.FC = () => {
         Welcome to Deskly
       </Typography>
       <Grid container spacing={4}>
-        {cardData.map((card: any) => (
-          <Grid item key={card.id}>
+        {taskData.map((task: any) => (
+          <Grid item key={task.id}>
             <Card>
-              <Typography variant="h5">{card.title}</Typography>
-              <Typography>{card.priority}</Typography>
-              <Typography>{card.status}</Typography>
-              <Button variant="contained" color="primary" onClick={() => handleViewTicket(card.id)}>
-                View and edit ticket
+              <Typography variant="h5">{task.title}</Typography>
+              <Typography>{task.priority}</Typography>
+              <Typography>{task.status}</Typography>
+              <Button variant="contained" color="primary" onClick={() => HandleViewTask(task)}>
+                View and edit task
               </Button>
             </Card>
           </Grid>
