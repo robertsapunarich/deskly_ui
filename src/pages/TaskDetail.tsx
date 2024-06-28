@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, FormLabel} from '@mui/material';
+import { Typography, TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, FormLabel, Card} from '@mui/material';
 import { Form, useLocation } from 'react-router-dom';
 import { Task } from '@mui/icons-material';
 import axios from 'axios';
@@ -9,12 +9,24 @@ interface Assignee {
   email: string;
 }
 
+interface Message {
+  body: string;
+  subject: string;
+}
+
+interface Thread {
+  id: number;
+  title: string;
+  messages: Message[];
+}
+
 interface Task {
   id: number;
   title: string;
   priority: string;
   status: string;
   assignee: Assignee;
+  thread: Thread;
 }
 
 async function fetchAssignees(): Promise<Assignee[]> {
@@ -47,12 +59,12 @@ const TaskDetail: React.FC = () => {
     priority: task.priority,
     status: task.status,
     assignee: task.assignee,
+    thread: task.thread,
   });
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Update task
     axios.put(`http://localhost:8000/task/${task.id}`, formData).then((response: any) => {
       console.log(response.data);
       task = response.data;
@@ -95,12 +107,12 @@ const TaskDetail: React.FC = () => {
   
   return (
     <div>
-      <Typography variant="h1" gutterBottom>
-        Task Detail
+      <Typography variant="h2" gutterBottom>
+        {task.title}
       </Typography>
       <br />
       <form onSubmit={handleFormSubmit}>
-        <Grid container spacing={2}>
+        <Grid container padding={6} spacing={2}>
           <Grid item xs={12}>
             <FormLabel>Title</FormLabel>
             <TextField
@@ -157,6 +169,17 @@ const TaskDetail: React.FC = () => {
             <Button variant="contained" color="primary" type="submit">
               Save
             </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h5">Messages</Typography>
+            <Typography paddingBottom={2} variant='h6'>{task.thread.title}</Typography>
+              {task.thread.messages.map((message) => (
+                <Card variant='outlined'>
+                  <div key={message.body}>
+                    <Typography padding={2}>{message.body}</Typography>
+                  </div>
+                </Card>
+              ))}
           </Grid>
         </Grid>
       </form>
